@@ -1,3 +1,7 @@
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 // The MIT License (MIT)
 
 // Typed.js | Copyright (c) 2014 Matt Boldt | www.mattboldt.com
@@ -20,14 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
-
-
-! function($) {
+!function ($) {
 
     "use strict";
 
-    var Typed = function(el, options) {
+    var Typed = function Typed(el, options) {
 
         // chosen element to manipulate text
         this.el = $(el);
@@ -43,7 +44,7 @@
         this.showCursor = this.isInput ? false : this.options.showCursor;
 
         // text content of element
-        this.elContent = this.attr ? this.el.attr(this.attr) : this.el.text()
+        this.elContent = this.attr ? this.el.attr(this.attr) : this.el.text();
 
         // html or plain text
         this.contentType = this.options.contentType;
@@ -99,26 +100,24 @@
 
     Typed.prototype = {
 
-        constructor: Typed
+        constructor: Typed,
 
-        ,
-        init: function() {
+        init: function init() {
             // begin the loop w/ first current string (global self.strings)
             // current string will be passed as an argument each time after this
             var self = this;
-            self.timeout = setTimeout(function() {
-                for (var i=0;i<self.strings.length;++i) self.sequence[i]=i;
-
-                // shuffle the array if true
-                if(self.shuffle) self.sequence = self.shuffleArray(self.sequence);
+            self.timeout = setTimeout(function () {
+                for (var i = 0; i < self.strings.length; ++i) {
+                    self.sequence[i] = i;
+                } // shuffle the array if true
+                if (self.shuffle) self.sequence = self.shuffleArray(self.sequence);
 
                 // Start typing
                 self.typewrite(self.strings[self.sequence[self.arrayPos]], self.strPos);
             }, self.startDelay);
-        }
+        },
 
-        ,
-        build: function() {
+        build: function build() {
             var self = this;
             // Insert cursor
             if (this.showCursor === true) {
@@ -129,7 +128,7 @@
                 self.strings = [];
                 this.stringsElement.hide();
                 var strings = this.stringsElement.find('p');
-                $.each(strings, function(key, value){
+                $.each(strings, function (key, value) {
                     self.strings.push($(value).html());
                 });
             }
@@ -137,8 +136,8 @@
         }
 
         // pass current string state to each function, types 1 char per call
-        ,
-        typewrite: function(curString, curStrPos) {
+
+        , typewrite: function typewrite(curString, curStrPos) {
             // exit when stopped
             if (this.stop === true) {
                 return;
@@ -158,7 +157,7 @@
             // else{ self.backDelay = 500; }
 
             // contain typing function in a timeout humanize'd delay
-            self.timeout = setTimeout(function() {
+            self.timeout = setTimeout(function () {
                 // check for an escape character before a pause value
                 // format: \^\d+ .. eg: ^1000 .. should be able to print the ^ too using ^^
                 // single ^ are removed from string
@@ -178,14 +177,14 @@
 
                 if (self.contentType === 'html') {
                     // skip over html tags while typing
-                    var curChar = curString.substr(curStrPos).charAt(0)
+                    var curChar = curString.substr(curStrPos).charAt(0);
                     if (curChar === '<' || curChar === '&') {
                         var tag = '';
                         var endTag = '';
                         if (curChar === '<') {
-                            endTag = '>'
+                            endTag = '>';
                         } else {
-                            endTag = ';'
+                            endTag = ';';
                         }
                         while (curString.substr(curStrPos).charAt(0) !== endTag) {
                             tag += curString.substr(curStrPos).charAt(0);
@@ -197,7 +196,7 @@
                 }
 
                 // timeout for any pause after a character
-                self.timeout = setTimeout(function() {
+                self.timeout = setTimeout(function () {
                     if (curStrPos === curString.length) {
                         // fires callback function
                         self.options.onStringTyped(self.arrayPos);
@@ -210,18 +209,16 @@
                             self.curLoop++;
 
                             // quit if we wont loop back
-                            if (self.loop === false || self.curLoop === self.loopCount)
-                                return;
+                            if (self.loop === false || self.curLoop === self.loopCount) return;
                         }
 
-                        self.timeout = setTimeout(function() {
+                        self.timeout = setTimeout(function () {
                             self.backspace(curString, curStrPos);
                         }, self.backDelay);
                     } else {
 
                         /* call before functions if applicable */
-                        if (curStrPos === 0)
-                            self.options.preStringTyped(self.arrayPos);
+                        if (curStrPos === 0) self.options.preStringTyped(self.arrayPos);
 
                         // start typing each new char into existing string
                         // curString: arg, self.el.html: original text inside element
@@ -248,11 +245,9 @@
 
                 // humanized value for typing
             }, humanize);
+        },
 
-        }
-
-        ,
-        backspace: function(curString, curStrPos) {
+        backspace: function backspace(curString, curStrPos) {
             // exit when stopped
             if (this.stop === true) {
                 return;
@@ -263,7 +258,7 @@
             var humanize = Math.round(Math.random() * (100 - 30)) + this.backSpeed;
             var self = this;
 
-            self.timeout = setTimeout(function() {
+            self.timeout = setTimeout(function () {
 
                 // ----- this part is optional ----- //
                 // check string array position
@@ -317,31 +312,31 @@
                 // if the stop number has been reached, increase
                 // array position to next string
                 else if (curStrPos <= self.stopNum) {
-                    self.arrayPos++;
+                        self.arrayPos++;
 
-                    if (self.arrayPos === self.strings.length) {
-                        self.arrayPos = 0;
+                        if (self.arrayPos === self.strings.length) {
+                            self.arrayPos = 0;
 
-                        // Shuffle sequence again
-                        if(self.shuffle) self.sequence = self.shuffleArray(self.sequence);
+                            // Shuffle sequence again
+                            if (self.shuffle) self.sequence = self.shuffleArray(self.sequence);
 
-                        self.init();
-                    } else
-                        self.typewrite(self.strings[self.sequence[self.arrayPos]], curStrPos);
-                }
+                            self.init();
+                        } else self.typewrite(self.strings[self.sequence[self.arrayPos]], curStrPos);
+                    }
 
                 // humanized value for typing
             }, humanize);
-
         }
         /**
          * Shuffles the numbers in the given array.
          * @param {Array} array
          * @returns {Array}
          */
-        ,shuffleArray: function(array) {
-            var tmp, current, top = array.length;
-            if(top) while(--top) {
+        , shuffleArray: function shuffleArray(array) {
+            var tmp,
+                current,
+                top = array.length;
+            if (top) while (--top) {
                 current = Math.floor(Math.random() * (top + 1));
                 tmp = array[current];
                 array[current] = array[top];
@@ -369,12 +364,12 @@
         // }
 
         // Reset and rebuild the element
-        ,
-        reset: function() {
+
+        , reset: function reset() {
             var self = this;
             clearInterval(self.timeout);
             var id = this.el.attr('id');
-            this.el.after('<span id="' + id + '"/>')
+            this.el.after('<span id="' + id + '"/>');
             this.el.remove();
             if (typeof this.cursor !== 'undefined') {
                 this.cursor.remove();
@@ -385,12 +380,12 @@
 
     };
 
-    $.fn.typed = function(option) {
-        return this.each(function() {
+    $.fn.typed = function (option) {
+        return this.each(function () {
             var $this = $(this),
                 data = $this.data('typed'),
-                options = typeof option == 'object' && option;
-            if (!data) $this.data('typed', (data = new Typed(this, options)));
+                options = (typeof option === "undefined" ? "undefined" : _typeof(option)) == 'object' && option;
+            if (!data) $this.data('typed', data = new Typed(this, options));
             if (typeof option == 'string') data[option]();
         });
     };
@@ -421,14 +416,12 @@
         // either html or text
         contentType: 'html',
         // call when done callback function
-        callback: function() {},
+        callback: function callback() {},
         // starting callback function before each string
-        preStringTyped: function() {},
+        preStringTyped: function preStringTyped() {},
         //callback for every typed string
-        onStringTyped: function() {},
+        onStringTyped: function onStringTyped() {},
         // callback for reset
-        resetCallback: function() {}
+        resetCallback: function resetCallback() {}
     };
-
-
 }(window.jQuery);
